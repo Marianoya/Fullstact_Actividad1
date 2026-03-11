@@ -9,8 +9,7 @@ function CRUDProyectos() {
   const [formData, setFormData] = useState({
     nombre_proyecto: '',
     descripcion_proyecto: '',
-    status_proyecto: 'activo',
-  });
+    status_proyecto: 'activo',});
 
   const cargarProyectos = async () => {
     try {
@@ -18,9 +17,7 @@ function CRUDProyectos() {
       const data = await response.json();
       setProyectos(data);
     } catch (error) {
-      console.error('Error al cargar proyectos:', error);
-    }
-  };
+      console.error('Error al cargar proyectos:', error);}};
 
   useEffect(() => {
     cargarProyectos();
@@ -28,49 +25,33 @@ function CRUDProyectos() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    setFormData((prev) => ({...prev,
+      [name]: value,}));};
 
   const limpiarFormulario = () => {
     setFormData({
       nombre_proyecto: '',
       descripcion_proyecto: '',
-      status_proyecto: 'activo',
-    });
-    setEditandoId(null);
-  };
+      status_proyecto: 'activo',});
+    setEditandoId(null);};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       if (editandoId) {
         await fetch(`${API_URL}/${editandoId}`, {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-      } else {
-        await fetch(API_URL, {
+            'Content-Type': 'application/json',},
+          body: JSON.stringify(formData),});
+      } else { await fetch(API_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-      }
-
-      await cargarProyectos();
-      limpiarFormulario();
+            'Content-Type': 'application/json',},
+          body: JSON.stringify(formData),});}
+      await cargarProyectos(); limpiarFormulario();
     } catch (error) {
-      console.error('Error al guardar proyecto:', error);
-    }
-  };
+      console.error('Error al guardar proyecto:', error);}};
 
   const handleEditar = (proyecto) => {
     setFormData({
@@ -103,7 +84,6 @@ function CRUDProyectos() {
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Gestor de Proyectos</h2>
-
       <form onSubmit={handleSubmit} className="card p-3 mb-4 shadow-sm">
         <div className="mb-3">
           <label className="form-label">Nombre del proyecto</label>
@@ -113,9 +93,7 @@ function CRUDProyectos() {
             name="nombre_proyecto"
             value={formData.nombre_proyecto}
             onChange={handleChange}
-            required
-          />
-        </div>
+            required/></div>
 
         <div className="mb-3">
           <label className="form-label">Descripción del proyecto</label>
@@ -124,9 +102,7 @@ function CRUDProyectos() {
             name="descripcion_proyecto"
             value={formData.descripcion_proyecto}
             onChange={handleChange}
-            rows="3"
-          />
-        </div>
+            rows="3"/></div>
 
         <div className="mb-3">
           <label className="form-label">Status del proyecto</label>
@@ -134,36 +110,28 @@ function CRUDProyectos() {
             className="form-select"
             name="status_proyecto"
             value={formData.status_proyecto}
-            onChange={handleChange}
-          >
+            onChange={handleChange}>
             <option value="activo">Activo</option>
             <option value="en progreso">En progreso</option>
             <option value="pausado">Pausado</option>
             <option value="completado">Completado</option>
-          </select>
-        </div>
-
+          </select></div>
         <div className="d-flex gap-2">
           <button type="submit" className="btn btn-primary">
             {editandoId ? 'Actualizar' : 'Guardar'}
           </button>
-
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={limpiarFormulario}
-          >
+            onClick={limpiarFormulario}>
             Limpiar
           </button>
-
           <button
             type="button"
             className="btn btn-info text-white"
-            onClick={cargarProyectos}
-          >
+            onClick={cargarProyectos}>
             Recargar
-          </button>
-        </div>
+          </button></div>
       </form>
 
       <div className="row">
@@ -192,8 +160,7 @@ function CRUDProyectos() {
                     onClick={() => handleEliminar(proyecto.id_proyecto)}
                   >
                     Eliminar
-                  </button>
-                </div>
+                  </button></div>
               </div>
             </div>
           </div>

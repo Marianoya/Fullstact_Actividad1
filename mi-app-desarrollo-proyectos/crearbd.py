@@ -57,10 +57,10 @@ def crear_base_y_tablas():
     try:
         # Conexión al servidor MySQL SIN elegir base todavía
         conexion = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="92031151617Soul7831",
-            port=3306
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            port=int(DB_PORT)
         )
 
         cursor = conexion.cursor()
