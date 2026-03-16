@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const { createClient } = require('redis');
+const { clearProjectsCache, saveProjectsCache } = require('../middleware/cacheProjects');
 require('dotenv').config();
 
 const publisher = createClient({
@@ -10,9 +11,14 @@ publisher.connect().catch(console.error);
 
 const getProjects = async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM creacion_proyectos');
+    const [rows] = await pool.query(
+      'SELECT id_proyecto, nombre_proyecto, descripcion_proyecto, status_proyecto FROM creacion_proyectos'
+    );
+
+    await saveProjectsCache(rows);
     res.json(rows);
   } catch (error) {
+    console.error('Error al obtener proyectos:', error);
     res.status(500).json({ error: 'Error al obtener proyectos' });
   }
 };
@@ -26,6 +32,8 @@ const createProject = async (req, res) => {
       [nombre_proyecto, descripcion_proyecto, status_proyecto]
     );
 
+    await clearProjectsCache();
+
     await publisher.publish('project.created', JSON.stringify({
       id_proyecto: result.insertId,
       nombre_proyecto,
@@ -34,6 +42,7 @@ const createProject = async (req, res) => {
 
     res.status(201).json({ message: 'Proyecto creado', id: result.insertId });
   } catch (error) {
+    console.error('Error al crear proyecto:', error);
     res.status(500).json({ error: 'Error al crear proyecto' });
   }
 };
@@ -48,8 +57,11 @@ const updateProject = async (req, res) => {
       [nombre_proyecto, descripcion_proyecto, status_proyecto, id]
     );
 
+    await clearProjectsCache();
+
     res.json({ message: 'Proyecto actualizado' });
   } catch (error) {
+    console.error('Error al actualizar proyecto:', error);
     res.status(500).json({ error: 'Error al actualizar proyecto' });
   }
 };
@@ -60,8 +72,11 @@ const deleteProject = async (req, res) => {
 
     await pool.query('DELETE FROM creacion_proyectos WHERE id_proyecto = ?', [id]);
 
+    await clearProjectsCache();
+
     res.json({ message: 'Proyecto eliminado' });
   } catch (error) {
+    console.error('Error al eliminar proyecto:', error);
     res.status(500).json({ error: 'Error al eliminar proyecto' });
   }
 };

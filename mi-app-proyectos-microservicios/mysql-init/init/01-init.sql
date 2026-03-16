@@ -49,3 +49,8 @@ CREATE TABLE IF NOT EXISTS asignacion_tareas (
 
 FLUSH PRIVILEGES;
 
+CREATE INDEX idx_users_correo ON gestion_usuarios(correo_electronico);
+CREATE INDEX idx_projects_status ON creacion_proyectos(status_proyecto);
+CREATE INDEX idx_tasks_dev ON asignacion_tareas(desarrollador_id);
+CREATE INDEX idx_tasks_project ON asignacion_tareas(proyecto_id);
+

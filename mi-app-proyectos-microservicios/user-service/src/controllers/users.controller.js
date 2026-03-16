@@ -1,8 +1,13 @@
 const pool = require('../config/db');
+const { clearUsersCache, saveUsersCache } = require('../middleware/cacheUsers');
 
 const getUsers = async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM gestion_usuarios');
+    const [rows] = await pool.query(
+      'SELECT id_user, nombre_programador, correo_electronico, especialidad FROM gestion_usuarios'
+    );
+
+    await saveUsersCache(rows);
     res.json(rows);
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
@@ -19,12 +24,9 @@ const createUser = async (req, res) => {
       [nombre_programador, correo_electronico, especialidad]
     );
 
-    const [nuevoUsuario] = await pool.query(
-      'SELECT * FROM gestion_usuarios WHERE id_user = ?',
-      [result.insertId]
-    );
+    await clearUsersCache();
 
-    res.status(201).json(nuevoUsuario[0]);
+    res.status(201).json({ message: 'Usuario creado', id: result.insertId });
   } catch (error) {
     console.error('Error al crear usuario:', error);
     res.status(500).json({ error: 'Error al crear usuario' });
@@ -41,12 +43,9 @@ const updateUser = async (req, res) => {
       [nombre_programador, correo_electronico, especialidad, id]
     );
 
-    const [usuarioActualizado] = await pool.query(
-      'SELECT * FROM gestion_usuarios WHERE id_user = ?',
-      [id]
-    );
+    await clearUsersCache();
 
-    res.json(usuarioActualizado[0]);
+    res.json({ message: 'Usuario actualizado' });
   } catch (error) {
     console.error('Error al actualizar usuario:', error);
     res.status(500).json({ error: 'Error al actualizar usuario' });
@@ -59,6 +58,8 @@ const deleteUser = async (req, res) => {
 
     await pool.query('DELETE FROM gestion_usuarios WHERE id_user = ?', [id]);
 
+    await clearUsersCache();
+
     res.json({ message: 'Usuario eliminado' });
   } catch (error) {
     console.error('Error al eliminar usuario:', error);
@@ -67,4 +68,5 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = { getUsers, createUser, updateUser, deleteUser };
+
 
