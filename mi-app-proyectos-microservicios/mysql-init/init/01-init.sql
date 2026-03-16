@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS auth_users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_auth_email ON auth_users(email);
+
 USE users_db;
 CREATE TABLE IF NOT EXISTS gestion_usuarios (
   id_user INT AUTO_INCREMENT PRIMARY KEY,
@@ -29,6 +31,8 @@ CREATE TABLE IF NOT EXISTS gestion_usuarios (
   especialidad VARCHAR(100)
 );
 
+CREATE INDEX idx_users_correo ON gestion_usuarios(correo_electronico);
+
 USE projects_db;
 CREATE TABLE IF NOT EXISTS creacion_proyectos (
   id_proyecto INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,6 +40,8 @@ CREATE TABLE IF NOT EXISTS creacion_proyectos (
   descripcion_proyecto TEXT,
   status_proyecto VARCHAR(50) DEFAULT 'activo'
 );
+
+CREATE INDEX idx_projects_status ON creacion_proyectos(status_proyecto);
 
 USE tasks_db;
 CREATE TABLE IF NOT EXISTS asignacion_tareas (
@@ -47,10 +53,9 @@ CREATE TABLE IF NOT EXISTS asignacion_tareas (
   status_tarea VARCHAR(50) DEFAULT 'activo'
 );
 
-FLUSH PRIVILEGES;
-
-CREATE INDEX idx_users_correo ON gestion_usuarios(correo_electronico);
-CREATE INDEX idx_projects_status ON creacion_proyectos(status_proyecto);
 CREATE INDEX idx_tasks_dev ON asignacion_tareas(desarrollador_id);
 CREATE INDEX idx_tasks_project ON asignacion_tareas(proyecto_id);
+CREATE INDEX idx_tasks_status ON asignacion_tareas(status_tarea);
+
+FLUSH PRIVILEGES;
 
