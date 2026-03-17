@@ -11,7 +11,7 @@ export const options = {
 };
 
 const BASE_URL = 'http://host.docker.internal';
-
+    
 export default function () {
   // 1. Login para obtener token
   const loginPayload = JSON.stringify({

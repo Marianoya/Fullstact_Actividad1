@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import socket from "../socket";
 
-
-
 function ChatBox() {
   
   const [mensaje, setMensaje] = useState("");
@@ -22,7 +20,7 @@ function ChatBox() {
     if (!mensaje.trim()) return;
 
     const user = JSON.parse(localStorage.getItem("user"));
-    
+
     socket.emit("chat:message", {
     usuario: user?.nombre || user?.email || "Usuario",
     mensaje
